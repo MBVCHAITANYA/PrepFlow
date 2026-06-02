@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="PrepFlow — A daily task planner for Computer Science job preparation. Organize DSA, OS, DBMS, CN, System Design and more." />
+  <title>PrepFlow — CS Job Prep Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- ───────── Sidebar ───────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚡</span>
+      <h1 class="brand-name">PrepFlow</h1>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <button class="nav-btn active" data-view="dashboard" id="nav-dashboard">
+        <span class="nav-icon">📊</span><span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-btn" data-view="planner" id="nav-planner">
+        <span class="nav-icon">📝</span><span class="nav-label">Planner</span>
+      </button>
+      <button class="nav-btn" data-view="calendar" id="nav-calendar">
+        <span class="nav-icon">📅</span><span class="nav-label">Calendar</span>
+      </button>
+      <button class="nav-btn" data-view="analytics" id="nav-analytics">
+        <span class="nav-icon">📈</span><span class="nav-label">Analytics</span>
+      </button>
+      <button class="nav-btn" data-view="targets" id="nav-targets">
+        <span class="nav-icon">🎯</span><span class="nav-label">Targets</span>
+      </button>
+      <button class="nav-btn" data-view="focus" id="nav-focus">
+        <span class="nav-icon">🧘</span><span class="nav-label">Focus Mode</span>
+      </button>
+      <button class="nav-btn" data-view="ai" id="nav-ai">
+        <span class="nav-icon">🤖</span><span class="nav-label">AI Assistant</span>
+      </button>
+      <button class="nav-btn" data-view="settings" id="nav-settings">
+        <span class="nav-icon">⚙️</span><span class="nav-label">Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ───────── Mobile Bottom Nav ───────── -->
+  <nav class="mobile-nav" id="mobileNav">
+    <button class="mob-nav-btn active" data-view="dashboard">📊</button>
+    <button class="mob-nav-btn" data-view="planner">📝</button>
+    <button class="mob-nav-btn" data-view="calendar">📅</button>
+    <button class="mob-nav-btn" data-view="analytics">📈</button>
+    <button class="mob-nav-btn" data-view="focus">🧘</button>
+    <button class="mob-nav-btn" data-view="settings">⚙️</button>
+  </nav>
+
+  <!-- ───────── Main Content ───────── -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ========== DASHBOARD VIEW ========== -->
+    <section class="view active" id="view-dashboard">
+      <header class="view-header">
+        <div>
+          <p class="view-date" id="dashDate"></p>
+          <h2 class="view-title" id="dashGreeting">Rise and Grind! 🚀</h2>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="globalSearch" placeholder="Search tasks…" />
+          </div>
+        </div>
+      </header>
+
+      <!-- Motivational Quote -->
+      <div class="quote-card" id="quoteCard">
+        <p class="quote-text" id="quoteText">"The only way to do great work is to love what you do."</p>
+        <span class="quote-author" id="quoteAuthor">— Steve Jobs</span>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-grid" id="dashStats">
+        <div class="stat-card stat-total">
+          <div class="stat-icon">📋</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTotal">0</span>
+            <span class="stat-label">Total Tasks</span>
+          </div>
+        </div>
+        <div class="stat-card stat-done">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statDone">0</span>
+            <span class="stat-label">Completed</span>
+          </div>
+        </div>
+        <div class="stat-card stat-pending">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statPending">0</span>
+            <span class="stat-label">Pending</span>
+          </div>
+        </div>
+        <div class="stat-card stat-pct">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statPct">0%</span>
+            <span class="stat-label">Completion</span>
+          </div>
+        </div>
+        <div class="stat-card stat-planned">
+          <div class="stat-icon">🕐</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statPlanned">0h</span>
+            <span class="stat-label">Planned Time</span>
+          </div>
+        </div>
+        <div class="stat-card stat-studied">
+          <div class="stat-icon">📚</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statStudied">0h</span>
+            <span class="stat-label">Completed Time</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Progress -->
+      <div class="progress-section">
+        <h3>Daily Progress</h3>
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" id="dailyProgressBar" style="width:0%"></div>
+        </div>
+        <span class="progress-label" id="dailyProgressLabel">0%</span>
+      </div>
+
+      <!-- Celebration -->
+      <div class="celebration-card hidden" id="celebrationCard">
+        <div class="celebration-emoji">🎉🥳🎊</div>
+        <h3>All Tasks Completed!</h3>
+        <p>Outstanding work today! Keep this momentum going.</p>
+      </div>
+
+      <!-- Category Progress Summary -->
+      <h3 class="section-title">Category Progress</h3>
+      <div class="category-progress-grid" id="dashCategoryGrid"></div>
+
+      <!-- Today's Tasks Preview -->
+      <h3 class="section-title">Today's Tasks</h3>
+      <div id="dashTodayTasks" class="task-list"></div>
+
+      <!-- AI Floating Button -->
+      <button class="ai-fab" id="aiFab" title="AI Assistant">
+        <span>🤖</span>
+      </button>
+    </section>
+
+    <!-- ========== PLANNER VIEW ========== -->
+    <section class="view" id="view-planner">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Daily Task Planner</h2>
+          <p class="view-subtitle">Plan your preparation day</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" id="addTaskBtn">+ Add Task</button>
+        </div>
+      </header>
+
+      <!-- Filters -->
+      <div class="filters-row" id="filtersRow">
+        <select id="filterCategory" class="filter-select">
+          <option value="all">All Categories</option>
+        </select>
+        <select id="filterStatus" class="filter-select">
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="in-progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+        <select id="filterPriority" class="filter-select">
+          <option value="all">All Priorities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <input type="date" id="filterDate" class="filter-select" />
+        <button class="btn btn-ghost" id="resetFiltersBtn">Reset</button>
+      </div>
+
+      <!-- Task List -->
+      <div id="plannerTaskList" class="task-list"></div>
+      <div class="empty-state hidden" id="plannerEmpty">
+        <div class="empty-icon">📭</div>
+        <h3>No tasks yet</h3>
+        <p>Start planning your preparation by adding a task.</p>
+        <button class="btn btn-primary" id="addTaskBtnEmpty">+ Add Task</button>
+      </div>
+    </section>
+
+    <!-- ========== CALENDAR VIEW ========== -->
+    <section class="view" id="view-calendar">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Calendar</h2>
+          <p class="view-subtitle">Visualize your preparation schedule</p>
+        </div>
+        <div class="header-actions">
+          <div class="cal-view-toggle">
+            <button class="btn btn-sm active" data-calview="daily" id="calDailyBtn">Day</button>
+            <button class="btn btn-sm" data-calview="weekly" id="calWeeklyBtn">Week</button>
+            <button class="btn btn-sm" data-calview="monthly" id="calMonthlyBtn">Month</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Calendar Navigation -->
+      <div class="cal-nav">
+        <button class="btn btn-icon" id="calPrev">◀</button>
+        <h3 id="calTitle">June 2026</h3>
+        <button class="btn btn-icon" id="calNext">▶</button>
+        <button class="btn btn-ghost" id="calToday">Today</button>
+      </div>
+
+      <div id="calendarContent" class="calendar-content"></div>
+    </section>
+
+    <!-- ========== ANALYTICS VIEW ========== -->
+    <section class="view" id="view-analytics">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Analytics</h2>
+          <p class="view-subtitle">Track your preparation progress</p>
+        </div>
+      </header>
+
+      <!-- Completion Rates -->
+      <div class="analytics-rates" id="analyticsRates">
+        <div class="rate-card">
+          <h4>Daily</h4>
+          <div class="rate-ring" id="rateDaily"><span>0%</span></div>
+        </div>
+        <div class="rate-card">
+          <h4>Weekly</h4>
+          <div class="rate-ring" id="rateWeekly"><span>0%</span></div>
+        </div>
+        <div class="rate-card">
+          <h4>Monthly</h4>
+          <div class="rate-ring" id="rateMonthly"><span>0%</span></div>
+        </div>
+      </div>
+
+      <!-- Category-wise Progress -->
+      <h3 class="section-title">Category-wise Progress</h3>
+      <div class="analytics-categories" id="analyticsCategoryGrid"></div>
+
+      <!-- Completion Chart -->
+      <h3 class="section-title">Tasks Completed (Last 7 Days)</h3>
+      <div class="chart-container" id="completionChart"></div>
+
+      <!-- Category Bar Chart -->
+      <h3 class="section-title">Tasks by Category</h3>
+      <div class="bar-chart-container" id="categoryBarChart"></div>
+    </section>
+
+    <!-- ========== TARGETS VIEW ========== -->
+    <section class="view" id="view-targets">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Long-term Goals 🎯</h2>
+          <p class="view-subtitle">Set goals with deadlines and track your progress</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" id="addTargetBtn">+ Add Goal</button>
+        </div>
+      </header>
+
+      <div id="targetsList" class="targets-list"></div>
+      <div class="empty-state hidden" id="targetsEmpty">
+        <div class="empty-icon">🎯</div>
+        <h3>No goals set</h3>
+        <p>Set long-term goals like "Complete DP in 2 weeks" to stay on track.</p>
+        <button class="btn btn-primary" id="addTargetBtnEmpty">+ Add Goal</button>
+      </div>
+    </section>
+
+    <!-- ========== FOCUS MODE VIEW ========== -->
+    <section class="view" id="view-focus">
+      <div class="focus-container">
+        <div class="focus-header">
+          <h2>🧘 Focus Mode</h2>
+          <p>Distraction-free task view. Stay in the zone.</p>
+          <button class="btn btn-outline" id="exitFocusBtn">Exit Focus Mode</button>
+        </div>
+        <div id="focusTaskList" class="focus-task-list"></div>
+        <div class="empty-state hidden" id="focusEmpty">
+          <div class="empty-icon">✨</div>
+          <h3>Nothing to focus on</h3>
+          <p>Add tasks for today in the Planner first.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== AI ASSISTANT VIEW ========== -->
+    <section class="view" id="view-ai">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">AI Assistant 🤖</h2>
+          <p class="view-subtitle">Powered by Google Gemini — Plan smarter, prepare faster</p>
+        </div>
+      </header>
+
+      <!-- Gemini AI Planner -->
+      <div class="ai-card ai-planner-card">
+        <h3>✨ AI Day Planner (Gemini)</h3>
+        <p>Describe your goals and let AI plan your schedule. It will create tasks you can add to your planner.</p>
+        <div class="ai-input-group">
+          <input type="text" id="aiGeminiInput" placeholder="e.g. Plan my DSA and OS study for today in 6 hours" />
+          <button class="btn btn-primary" id="aiGeminiBtn">🚀 Plan with AI</button>
+        </div>
+        <div class="form-row" style="margin-top:.6rem">
+          <div class="form-group">
+            <label>Plan for</label>
+            <select id="aiGeminiScope">
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Hours available/day</label>
+            <input type="number" id="aiGeminiHours" value="8" min="1" max="16" />
+          </div>
+        </div>
+        <div id="aiGeminiResult" class="ai-result"></div>
+      </div>
+
+      <div class="ai-grid">
+        <!-- Subtask Suggester -->
+        <div class="ai-card">
+          <h3>📋 Subtask Suggester</h3>
+          <p>Enter a topic and get suggested subtasks.</p>
+          <div class="ai-input-group">
+            <input type="text" id="aiSubtaskInput" placeholder="e.g. Dynamic Programming" />
+            <button class="btn btn-primary" id="aiSubtaskBtn">Suggest</button>
+          </div>
+          <div id="aiSubtaskResult" class="ai-result"></div>
+        </div>
+
+        <!-- Schedule Generator -->
+        <div class="ai-card">
+          <h3>📅 Quick Schedule Generator</h3>
+          <p>Generate a suggested daily study schedule (offline).</p>
+          <div class="ai-input-group">
+            <input type="number" id="aiScheduleHours" placeholder="Available hours (e.g. 8)" min="1" max="16" />
+            <button class="btn btn-primary" id="aiScheduleBtn">Generate</button>
+          </div>
+          <div id="aiScheduleResult" class="ai-result"></div>
+        </div>
+
+        <!-- Focus Suggestion -->
+        <div class="ai-card">
+          <h3>🎯 What to Focus Next</h3>
+          <p>Based on your progress, here's what you should focus on.</p>
+          <button class="btn btn-primary" id="aiFocusBtn">Analyze</button>
+          <div id="aiFocusResult" class="ai-result"></div>
+        </div>
+
+        <!-- Motivation -->
+        <div class="ai-card">
+          <h3>💪 Motivational Tips</h3>
+          <p>Get a preparation tip to keep you going.</p>
+          <button class="btn btn-primary" id="aiMotivationBtn">Motivate Me</button>
+          <div id="aiMotivationResult" class="ai-result"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SETTINGS VIEW ========== -->
+    <section class="view" id="view-settings">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Settings</h2>
+          <p class="view-subtitle">Manage your preferences and application configuration</p>
+        </div>
+      </header>
+
+      <div class="settings-sections">
+        <!-- General -->
+        <div class="settings-section">
+          <div class="settings-section-header">
+            <span class="settings-section-icon">🎨</span>
+            <div><h3>Appearance</h3><p>Customize how PrepFlow looks</p></div>
+          </div>
+          <div class="settings-section-body">
+            <div class="settings-row">
+              <div><strong>Theme Mode</strong><p class="settings-hint">Switch between light and dark interface</p></div>
+              <div style="display:flex;align-items:center;gap:.6rem">
+                <label class="switch"><input type="checkbox" id="settingsThemeToggle" /><span class="slider"></span></label>
+                <span class="switch-label" id="themeLabel">Dark Mode</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Integration -->
+        <div class="settings-section">
+          <div class="settings-section-header">
+            <span class="settings-section-icon">🤖</span>
+            <div><h3>AI Integration</h3><p>Connect Google Gemini for smart planning</p></div>
+          </div>
+          <div class="settings-section-body">
+            <div class="settings-row">
+              <div><strong>Gemini API Key</strong><p class="settings-hint">Get your key from <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a></p></div>
+              <div class="ai-input-group" style="max-width:350px">
+                <input type="password" id="geminiApiKey" placeholder="Enter your Gemini API key" />
+                <button class="btn btn-primary" id="saveApiKeyBtn">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="settings-section">
+          <div class="settings-section-header">
+            <span class="settings-section-icon">📂</span>
+            <div><h3>Categories</h3><p>Manage your preparation categories</p></div>
+          </div>
+          <div class="settings-section-body">
+            <div class="ai-input-group" style="margin-bottom:.8rem">
+              <input type="text" id="newCategoryInput" placeholder="New category name" />
+              <button class="btn btn-primary" id="addCategoryBtn">Add Category</button>
+            </div>
+            <ul id="categoryList" class="category-list"></ul>
+          </div>
+        </div>
+
+        <!-- Data -->
+        <div class="settings-section settings-danger">
+          <div class="settings-section-header">
+            <span class="settings-section-icon">⚠️</span>
+            <div><h3>Data Management</h3><p>Reset or clear your application data</p></div>
+          </div>
+          <div class="settings-section-body">
+            <div class="settings-row">
+              <div><strong>Reset Today</strong><p class="settings-hint">Set all today's tasks back to pending</p></div>
+              <button class="btn btn-warning" id="resetTodayBtn">Reset Today's Tasks</button>
+            </div>
+            <div class="settings-row">
+              <div><strong>Clear Everything</strong><p class="settings-hint">Permanently delete all tasks, targets, and preferences</p></div>
+              <button class="btn btn-danger" id="clearAllBtn">Clear All Data</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- About -->
+        <div class="settings-section">
+          <div class="settings-section-header">
+            <span class="settings-section-icon">ℹ️</span>
+            <div><h3>About PrepFlow</h3><p>Application information</p></div>
+          </div>
+          <div class="settings-section-body">
+            <p><strong>PrepFlow v2.0</strong> — CS Job Preparation Planner</p>
+            <p style="color:var(--text3);margin-top:.3rem">Built with HTML, CSS &amp; JavaScript. AI powered by Google Gemini. Data stored locally in your browser.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ───────── MODALS ───────── -->
+
+  <!-- Add/Edit Task Modal -->
+  <div class="modal-overlay hidden" id="taskModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="taskModalTitle">Add Task</h3>
+        <button class="modal-close" id="taskModalClose">&times;</button>
+      </div>
+      <form id="taskForm" class="modal-body">
+        <input type="hidden" id="taskId" />
+
+        <div class="form-group">
+          <label for="taskTitle">Task Title *</label>
+          <input type="text" id="taskTitle" required placeholder="e.g. Learn Dynamic Programming" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskCategory">Category *</label>
+            <select id="taskCategory" required></select>
+          </div>
+          <div class="form-group hidden" id="customCatGroup">
+            <label for="taskCustomCat">Custom Category</label>
+            <input type="text" id="taskCustomCat" placeholder="Category name" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskDate">Date *</label>
+            <input type="date" id="taskDate" required />
+          </div>
+          <div class="form-group">
+            <label for="taskPriority">Priority</label>
+            <select id="taskPriority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskStartTime">Start Time</label>
+            <input type="time" id="taskStartTime" />
+          </div>
+          <div class="form-group">
+            <label for="taskEndTime">End Time</label>
+            <input type="time" id="taskEndTime" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskDuration">Duration (minutes)</label>
+            <input type="number" id="taskDuration" min="5" max="720" placeholder="e.g. 60" />
+          </div>
+          <div class="form-group">
+            <label for="taskStatus">Status</label>
+            <select id="taskStatus">
+              <option value="pending">Pending</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="taskSource">Source / Resource Link</label>
+          <input type="url" id="taskSource" placeholder="e.g. https://leetcode.com/problems/..." />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskNotes">Notes</label>
+            <textarea id="taskNotes" rows="2" placeholder="Additional notes…"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="taskRepeatDays">Repeat for (days)</label>
+            <input type="number" id="taskRepeatDays" min="1" max="30" placeholder="1 = today only" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="taskModalCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="taskModalSave">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Subtask Modal -->
+  <div class="modal-overlay hidden" id="subtaskModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="subtaskModalTitle">Subtasks</h3>
+        <button class="modal-close" id="subtaskModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="subtask-progress-bar-wrapper">
+          <div class="progress-bar" id="subtaskProgressBar" style="width:0%"></div>
+        </div>
+        <span class="progress-label" id="subtaskProgressLabel">0/0 completed</span>
+
+        <div class="ai-input-group" style="margin-top:1rem">
+          <input type="text" id="newSubtaskInput" placeholder="Add a subtask…" />
+          <button class="btn btn-primary" id="addSubtaskBtn">Add</button>
+        </div>
+        <button class="btn btn-ghost" id="aiSuggestSubtasksBtn" style="margin-top:.5rem;width:100%">🤖 AI Suggest
+          Subtasks</button>
+
+        <ul id="subtaskList" class="subtask-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Target Modal -->
+  <div class="modal-overlay hidden" id="targetModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Set Long-term Goal</h3>
+        <button class="modal-close" id="targetModalClose">&times;</button>
+      </div>
+      <form id="targetForm" class="modal-body">
+        <div class="form-group">
+          <label for="targetText">Goal *</label>
+          <input type="text" id="targetText" required placeholder="e.g. Complete Dynamic Programming topic" />
+        </div>
+        <div class="form-group">
+          <label for="targetCategory">Category</label>
+          <select id="targetCategory"></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="targetStartDate">Start Date *</label>
+            <input type="date" id="targetStartDate" required />
+          </div>
+          <div class="form-group">
+            <label for="targetEndDate">Deadline *</label>
+            <input type="date" id="targetEndDate" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="targetNotes">Notes</label>
+          <textarea id="targetNotes" rows="2" placeholder="e.g. Cover all standard DP patterns"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="targetModalCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Set Goal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay hidden" id="confirmModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="confirmTitle">Confirm</h3>
+        <button class="modal-close" id="confirmClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage">Are you sure?</p>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" id="confirmNo">Cancel</button>
+          <button class="btn btn-danger" id="confirmYes">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+  <script src="features.js"></script>
+</body>
+
+</html>
