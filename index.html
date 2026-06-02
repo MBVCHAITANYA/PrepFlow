@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
-    content="PrepFlow — A daily task planner for Computer Science job preparation. Organize DSA, OS, DBMS, CN, System Design and more." />
-  <title>PrepFlow — CS Job Prep Planner</title>
+    content="PrepFlow — A smart daily task planner with AI integration. Organize tasks, track progress, set goals, and plan your day." />
+  <title>PrepFlow — Smart Task Planner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -171,7 +171,7 @@
       <header class="view-header">
         <div>
           <h2 class="view-title">Daily Task Planner</h2>
-          <p class="view-subtitle">Plan your preparation day</p>
+          <p class="view-subtitle">Plan your day</p>
         </div>
         <div class="header-actions">
           <button class="btn btn-primary" id="addTaskBtn">+ Add Task</button>
@@ -204,7 +204,7 @@
       <div class="empty-state hidden" id="plannerEmpty">
         <div class="empty-icon">📭</div>
         <h3>No tasks yet</h3>
-        <p>Start planning your preparation by adding a task.</p>
+        <p>Start planning your day by adding a task.</p>
         <button class="btn btn-primary" id="addTaskBtnEmpty">+ Add Task</button>
       </div>
     </section>
@@ -214,7 +214,7 @@
       <header class="view-header">
         <div>
           <h2 class="view-title">Calendar</h2>
-          <p class="view-subtitle">Visualize your preparation schedule</p>
+          <p class="view-subtitle">Visualize your schedule</p>
         </div>
         <div class="header-actions">
           <div class="cal-view-toggle">
@@ -241,7 +241,7 @@
       <header class="view-header">
         <div>
           <h2 class="view-title">Analytics</h2>
-          <p class="view-subtitle">Track your preparation progress</p>
+          <p class="view-subtitle">Track your progress</p>
         </div>
       </header>
 
@@ -326,7 +326,7 @@
         <h3>✨ AI Day Planner (Gemini)</h3>
         <p>Describe your goals and let AI plan your schedule. It will create tasks you can add to your planner.</p>
         <div class="ai-input-group">
-          <input type="text" id="aiGeminiInput" placeholder="e.g. Plan my DSA and OS study for today in 6 hours" />
+          <input type="text" id="aiGeminiInput" placeholder="e.g. Plan my morning routine and study tasks for today in 6 hours" />
           <button class="btn btn-primary" id="aiGeminiBtn">🚀 Plan with AI</button>
         </div>
         <div class="form-row" style="margin-top:.6rem">
@@ -380,7 +380,7 @@
         <!-- Motivation -->
         <div class="ai-card">
           <h3>💪 Motivational Tips</h3>
-          <p>Get a preparation tip to keep you going.</p>
+          <p>Get a motivational tip to keep you going.</p>
           <button class="btn btn-primary" id="aiMotivationBtn">Motivate Me</button>
           <div id="aiMotivationResult" class="ai-result"></div>
         </div>
@@ -435,7 +435,7 @@
         <div class="settings-section">
           <div class="settings-section-header">
             <span class="settings-section-icon">📂</span>
-            <div><h3>Categories</h3><p>Manage your preparation categories</p></div>
+            <div><h3>Categories</h3><p>Manage your task categories</p></div>
           </div>
           <div class="settings-section-body">
             <div class="ai-input-group" style="margin-bottom:.8rem">
@@ -471,7 +471,7 @@
             <div><h3>About PrepFlow</h3><p>Application information</p></div>
           </div>
           <div class="settings-section-body">
-            <p><strong>PrepFlow v2.0</strong> — CS Job Preparation Planner</p>
+            <p><strong>PrepFlow v2.0</strong> — Smart Task Planner</p>
             <p style="color:var(--text3);margin-top:.3rem">Built with HTML, CSS &amp; JavaScript. AI powered by Google Gemini. Data stored locally in your browser.</p>
           </div>
         </div>

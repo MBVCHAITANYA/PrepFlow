@@ -1,7 +1,7 @@
 /* PrepFlow - Core App Module */
 const LS={get(k,d){try{return JSON.parse(localStorage.getItem('pf_'+k))||d}catch{return d}},set(k,v){localStorage.setItem('pf_'+k,JSON.stringify(v))}};
 
-const DEFAULT_CATS=['Exercise','DSA','Core Subjects','Design','Communication','Projects','Aptitude'];
+const DEFAULT_CATS=[];
 const QUOTES=[
   {t:"The only way to do great work is to love what you do.",a:"Steve Jobs"},
   {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
@@ -16,6 +16,7 @@ const QUOTES=[
 ];
 
 function todayStr(){return new Date().toISOString().slice(0,10)}
+function to12h(t){if(!t)return'';const[h,m]=t.split(':').map(Number);const ampm=h>=12?'PM':'AM';const h12=h%12||12;return h12+':'+(m<10?'0':'')+m+' '+ampm}
 function fmtDate(d){return new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
 let _uidC=0;function uid(){return Date.now().toString(36)+'-'+(++_uidC).toString(36)+Math.random().toString(36).slice(2,5)}
 
@@ -56,7 +57,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   setupCalendarNav();
   setupAI();
   setQuote();
-  seedSampleTasks();
   document.getElementById('dashDate').textContent=fmtDate(todayStr());
   document.getElementById('filterDate').value=todayStr();
   // AI FAB click handler
@@ -67,38 +67,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   showView('dashboard');
 });
 
-/* Seed sample tasks on first run */
-function seedSampleTasks(){
-  if(LS.get('seeded',false)||tasks.length>0)return;
-  const today=todayStr();
-  const samples=[
-    {title:'Basketball Training',category:'Exercise',startTime:'06:00',endTime:'07:00',priority:'high',status:'pending'},
-    {title:'Cardio Session',category:'Exercise',startTime:'07:00',endTime:'07:30',priority:'medium',status:'pending'},
-    {title:'Dynamic Programming Problems',category:'DSA',startTime:'08:00',endTime:'10:00',priority:'high',status:'pending'},
-    {title:'Graph Practice',category:'DSA',startTime:'10:15',endTime:'11:15',priority:'high',status:'pending'},
-    {title:'Operating Systems',category:'Core Subjects',startTime:'11:30',endTime:'13:00',priority:'medium',status:'pending'},
-    {title:'DBMS Revision',category:'Core Subjects',startTime:'14:00',endTime:'15:00',priority:'medium',status:'pending'},
-    {title:'UI Design Practice',category:'Design',startTime:'15:15',endTime:'16:15',priority:'medium',status:'pending'},
-    {title:'OOPS Concepts',category:'Design',startTime:'16:30',endTime:'17:15',priority:'medium',status:'pending'},
-    {title:'System Design Basics',category:'Design',startTime:'17:30',endTime:'18:30',priority:'high',status:'pending'},
-    {title:'Mock Interview',category:'Communication',startTime:'19:00',endTime:'19:45',priority:'high',status:'pending'},
-    {title:'English Speaking Practice',category:'Communication',startTime:'19:45',endTime:'20:15',priority:'low',status:'pending'},
-    {title:'Build Dashboard Feature',category:'Projects',startTime:'20:30',endTime:'22:00',priority:'high',status:'pending'},
-    {title:'API Integration',category:'Projects',startTime:'22:00',endTime:'22:45',priority:'medium',status:'pending'},
-    {title:'Quantitative Aptitude',category:'Aptitude',startTime:'22:45',endTime:'23:00',priority:'low',status:'pending'},
-    {title:'Logical Reasoning',category:'Aptitude',startTime:'13:00',endTime:'13:45',priority:'low',status:'pending'}
-  ];
-  samples.forEach(s=>{
-    s.id=uid();s.date=today;s.subtasks=[];s.notes='';s.duration=0;s.createdAt=new Date().toISOString();
-    if(s.startTime&&s.endTime){
-      const[sh,sm]=s.startTime.split(':').map(Number);
-      const[eh,em]=s.endTime.split(':').map(Number);
-      s.duration=(eh*60+em)-(sh*60+sm);
-    }
-    tasks.push(s);
-  });
-  saveTasks();LS.set('seeded',true);
-}
+
 
 /* Theme */
 function applyTheme(t){
@@ -222,7 +191,7 @@ function createTaskCard(t){
   const subs=t.subtasks||[];
   const subDone=subs.filter(s=>s.done).length;
   const subBar=subs.length?`<div class="task-subtask-bar"><div class="progress-bar-wrapper"><div class="progress-bar" style="width:${Math.round(subDone/subs.length*100)}%"></div></div><span>${subDone}/${subs.length}</span></div>`:'';
-  const timeStr=t.startTime?(t.startTime+(t.endTime?' - '+t.endTime:'')):'';
+  const timeStr=t.startTime?(to12h(t.startTime)+(t.endTime?' - '+to12h(t.endTime):'')):'';
   const durStr=t.duration?fmtDur(t.duration):'';
   div.innerHTML=`
     <div class="task-check${t.status==='completed'?' checked':''}" data-id="${t.id}">${t.status==='completed'?'✓':''}</div>
@@ -352,6 +321,20 @@ function setupTaskModal(){
   catSel.addEventListener('change',()=>{
     document.getElementById('customCatGroup').classList.toggle('hidden',catSel.value!=='__custom__');
   });
+  // Auto-calculate duration when start/end time changes
+  const startInp=document.getElementById('taskStartTime');
+  const endInp=document.getElementById('taskEndTime');
+  const durInp=document.getElementById('taskDuration');
+  function autoCalcDuration(){
+    if(startInp.value&&endInp.value){
+      const[sh,sm]=startInp.value.split(':').map(Number);
+      const[eh,em]=endInp.value.split(':').map(Number);
+      const mins=(eh*60+em)-(sh*60+sm);
+      if(mins>0)durInp.value=mins;
+    }
+  }
+  startInp.addEventListener('change',autoCalcDuration);
+  endInp.addEventListener('change',autoCalcDuration);
   form.addEventListener('submit',e=>{
     e.preventDefault();saveTaskForm();close();
   });
@@ -628,13 +611,20 @@ function renderSettings(){
   const ul=document.getElementById('categoryList');ul.innerHTML='';
   categories.forEach((c,i)=>{
     const li=document.createElement('li');
-    li.innerHTML=`<span>${esc(c)}</span>${DEFAULT_CATS.includes(c)?'':'<button title="Remove">✕</button>'}`;
-    const btn=li.querySelector('button');
-    if(btn)btn.addEventListener('click',()=>{categories.splice(i,1);saveCats();renderSettings()});
+    li.innerHTML=`<span>${esc(c)}</span><button title="Remove">✕</button>`;
+    li.querySelector('button').addEventListener('click',()=>{categories.splice(i,1);saveCats();renderSettings()});
     ul.appendChild(li);
-  });
+  });\n  if(!categories.length)ul.innerHTML='<li style="color:var(--text3);font-style:italic">No categories yet. Add one above to get started.</li>';
 }
 
-/* Category colors for timeline */
-const CAT_COLORS={'Exercise':'#22c55e','DSA':'#3b82f6','Core Subjects':'#8b5cf6','Design':'#f97316','Communication':'#ec4899','Projects':'#06b6d4','Aptitude':'#eab308'};
-function getCatColor(c){return CAT_COLORS[c]||'#6366f1'}
+/* Category colors — dynamically assigned for any user-created category */
+const PALETTE=['#3b82f6','#22c55e','#8b5cf6','#f97316','#ec4899','#06b6d4','#eab308','#ef4444','#14b8a6','#a855f7','#f59e0b','#6366f1','#10b981','#e11d48','#0ea5e9'];
+const _catColorCache={};
+function getCatColor(c){
+  if(!c)return'#6366f1';
+  if(!_catColorCache[c]){
+    const idx=Object.keys(_catColorCache).length%PALETTE.length;
+    _catColorCache[c]=PALETTE[idx];
+  }
+  return _catColorCache[c];
+}
