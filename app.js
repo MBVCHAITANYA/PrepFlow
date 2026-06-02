@@ -614,7 +614,8 @@ function renderSettings(){
     li.innerHTML=`<span>${esc(c)}</span><button title="Remove">✕</button>`;
     li.querySelector('button').addEventListener('click',()=>{categories.splice(i,1);saveCats();renderSettings()});
     ul.appendChild(li);
-  });\n  if(!categories.length)ul.innerHTML='<li style="color:var(--text3);font-style:italic">No categories yet. Add one above to get started.</li>';
+  });
+  if(!categories.length)ul.innerHTML='<li style="color:var(--text3);font-style:italic">No categories yet. Add one above to get started.</li>';
 }
 
 /* Category colors — dynamically assigned for any user-created category */
